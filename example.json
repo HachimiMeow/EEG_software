@@ -30,10 +30,11 @@
         "Y": "High risk",
         "PY": "High risk",
         "N": "Low risk",
-        "PN": "Low risk",
+        "PN": "HIGH risk",
         "NI": "Low risk"
       }
     }
   },
-  "start": "Q2"
+  "start": "Q2",
+  "end": "Q1"
 }
