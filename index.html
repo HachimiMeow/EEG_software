@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>脑电实验终端</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        /* Custom styles for Material Design look and feel */
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #3b82f6; /* Blue 500 */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.5), 0 2px 4px -1px rgba(59, 130, 246, 0.25);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 10px -1px rgba(59, 130, 246, 0.6), 0 4px 6px -2px rgba(59, 130, 246, 0.3);
+        }
+        .btn-secondary {
+            background-color: #e5e7eb; /* Gray 200 */
+            color: #4b5563; /* Gray 600 */
+            padding: 1rem 2rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db; /* Gray 300 */
+        }
+        .text-medical {
+            color: #3b82f6;
+        }
+        .bg-tech-panel {
+            background: linear-gradient(145deg, #1f2937 0%, #000000 100%);
+        }
+        .progress-bar {
+            height: 1.5rem;
+            border-radius: 9999px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6; /* Blue 500 */
+            transition: width 0.5s ease;
+        }
+        .progress-animated {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa, #3b82f6);
+            background-size: 200% 100%;
+            animation: progress-pulse 2s linear infinite;
+        }
+        @keyframes progress-pulse {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+<div id="container" class="relative max-w-7xl mx-auto flex items-center justify-center min-h-screen">
+
+    <!-- Screen 1: Welcome Screen -->
+    <div id="screen1" class="absolute w-full h-full card p-10 flex flex-col items-center justify-between transition-opacity duration-500 opacity-100 z-10">
+        <header class="w-full text-center">
+            <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 mt-10">脑电实验终端</h1>
+        </header>
+
+        <main class="flex flex-col items-center justify-center flex-grow p-8">
+            <!-- Updated Icon for Welcome Screen -->
+            <svg class="w-48 h-48 mb-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            <div class="space-y-6">
+                <button onclick="nextScreen(2)" class="btn-primary w-64 text-xl">开始实验</button>
+                <button onclick="nextScreen(4)" class="btn-secondary w-64 text-xl">查看历史报告</button>
+            </div>
+        </main>
+
+        <footer class="w-full text-center text-gray-500 mb-4">
+            <p>版本号: v1.0.2025</p>
+        </footer>
+    </div>
+
+    <!-- Screen 2: User Info Input -->
+    <div id="screen2" class="absolute w-full h-full card p-10 flex flex-col lg:flex-row transition-opacity duration-500 opacity-0 z-0">
+        <div class="flex-1 p-6 space-y-8 overflow-y-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">用户信息</h2>
+            <form id="userInfoForm" class="space-y-6">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-700">姓名 <span class="text-red-500">*</span></label>
+                    <input type="text" id="name" name="name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">性别 <span class="text-red-500">*</span></label>
+                    <div class="mt-2 space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="gender" value="男" required class="text-blue-600 focus:ring-blue-500 rounded-full">
+                            <span class="ml-2 text-gray-700">男</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="gender" value="女" class="text-blue-600 focus:ring-blue-500 rounded-full">
+                            <span class="ml-2 text-gray-700">女</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <label for="dob" class="block text-sm font-medium text-gray-700">出生日期 <span class="text-red-500">*</span></label>
+                    <input type="date" id="dob" name="dob" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">视力</label>
+                    <div class="flex space-x-4 mt-1">
+                        <div>
+                            <label for="visionLeft" class="block text-xs font-medium text-gray-500">左</label>
+                            <input type="text" id="visionLeft" name="visionLeft" placeholder="例如: 5.0" pattern="^\d{1}\.\d{1}$" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                        </div>
+                        <div>
+                            <label for="visionRight" class="block text-xs font-medium text-gray-500">右</label>
+                            <input type="text" id="visionRight" name="visionRight" placeholder="例如: 5.0" pattern="^\d{1}\.\d{1}$" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <label for="height" class="block text-sm font-medium text-gray-700">身高 (cm) <span class="text-red-500">*</span></label>
+                    <input type="number" id="height" name="height" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label for="weight" class="block text-sm font-medium text-gray-700">体重 (kg) <span class="text-red-500">*</span></label>
+                    <input type="number" id="weight" name="weight" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label for="iq" class="block text-sm font-medium text-gray-700">智商</label>
+                    <input type="number" id="iq" name="iq" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                </div>
+                <div>
+                    <label for="medicalHistory" class="block text-sm font-medium text-gray-700">既往病史</label>
+                    <textarea id="medicalHistory" name="medicalHistory" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5"></textarea>
+                </div>
+                <div>
+                    <label for="medication" class="block text-sm font-medium text-gray-700">服用药物史</label>
+                    <textarea id="medication" name="medication" rows="3" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5"></textarea>
+                </div>
+                <div>
+                    <label for="testLocation" class="block text-sm font-medium text-gray-700">测试地点 <span class="text-red-500">*</span></label>
+                    <select id="testLocation" name="testLocation" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                        <option value="信息所">信息所</option>
+                        <option value="康复中心">康复中心</option>
+                        <option value="医院">医院</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="testDate" class="block text-sm font-medium text-gray-700">测试日期</label>
+                    <div class="flex items-center space-x-2 mt-1">
+                        <!-- Removed readonly to allow user selection -->
+                        <input type="date" id="testDate" name="testDate" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                    </div>
+                </div>
+                <div>
+                    <label for="experimentId" class="block text-sm font-medium text-gray-700">实验编号</label>
+                    <div class="flex items-center space-x-4">
+                        <input type="text" id="experimentId" name="experimentId" readonly class="flex-1 block w-full rounded-md border-gray-300 bg-gray-100 shadow-sm cursor-not-allowed rounded-lg p-2.5">
+                        <!-- New reset button -->
+                        <button onclick="resetExperimentId()" type="button" class="btn-secondary !p-2">重置编号</button>
+                    </div>
+                </div>
+                <div>
+                    <label for="tester" class="block text-sm font-medium text-gray-700">测试人员 <span class="text-red-500">*</span></label>
+                    <select id="tester" name="tester" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 rounded-lg p-2.5">
+                        <option value="书博">书博</option>
+                        <option value="鸿哲">鸿哲</option>
+                        <option value="东东">东东</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+        <div class="flex-1 p-6 border-t lg:border-t-0 lg:border-l border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">实验说明</h2>
+            <div class="prose max-w-none text-gray-600 text-lg">
+                <p>在开始实验前，请您认真填写以下信息，以确保实验数据的准确性和有效性。</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>请务必真实填写所有信息。</li>
+                    <li>在实验过程中，请保持身体放松，尽量减少眨眼和头部移动。</li>
+                    <li>本实验仅用于科学研究，所有数据将严格保密。</li>
+                </ul>
+            </div>
+            <!-- Updated Icon for User Info Screen -->
+            <div class="mt-8 flex justify-center text-8xl">
+                🔍
+            </div>
+        </div>
+        <div class="absolute bottom-8 right-8 space-x-4">
+            <button onclick="prevScreen(1)" class="btn-secondary">上一步</button>
+            <button onclick="nextScreen(3)" class="btn-primary">下一步</button>
+        </div>
+    </div>
+
+    <!-- Screen 3: Experiment Status Panel -->
+    <div id="screen3" class="absolute w-full h-full card p-10 flex flex-col transition-opacity duration-500 opacity-0 z-0">
+        <header class="w-full text-center mb-12">
+            <h1 class="text-4xl font-extrabold text-gray-900 mt-10">实验进行中</h1>
+        </header>
+
+        <main class="flex flex-col items-center justify-center flex-grow space-y-8">
+            <div class="text-center mb-8">
+                <h2 class="text-2xl font-semibold text-gray-800" id="current-step-display">睁眼静息 - 剩余 <span id="time-left">30</span>s</h2>
+            </div>
+            <div class="w-full max-w-2xl px-8">
+                <p class="text-gray-500 text-sm mb-2">整体进度</p>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+            <div class="w-full max-w-2xl px-8 mt-10">
+                <h3 class="text-xl font-semibold text-gray-800">当前任务说明</h3>
+                <p id="task-instruction" class="text-gray-600 mt-2 text-lg">请保持双眼睁开，平视前方，尽量不要眨眼或移动。</p>
+            </div>
+        </main>
+
+        <footer class="w-full flex justify-center mb-8 space-x-4">
+            <button onclick="stopExperiment()" class="btn-secondary">中止实验</button>
+            <button onclick="showReport()" class="btn-primary">完成实验</button>
+        </footer>
+    </div>
+
+    <!-- Screen 4: Report Generation Interface -->
+    <div id="screen4" class="absolute w-full h-full card p-10 flex flex-col lg:flex-row transition-opacity duration-500 opacity-0 z-0">
+        <div class="flex-1 p-6 space-y-8">
+            <h2 class="text-3xl font-bold text-gray-800">实验报告</h2>
+            <div class="card p-6 border-l-4 border-blue-500">
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">用户信息</h3>
+                <div id="report-user-info" class="text-gray-600 space-y-2">
+                    <!-- User info will be injected here -->
+                </div>
+            </div>
+        </div>
+        <div class="flex-1 p-6 mt-6 lg:mt-0 lg:border-l border-gray-200">
+            <div class="bg-tech-panel text-white p-8 rounded-xl shadow-lg h-full flex flex-col">
+                <h3 class="text-2xl font-bold mb-4">EEG 数据分析</h3>
+                <div class="flex-grow flex items-center justify-center mb-6 border border-gray-700 rounded-lg">
+                    <p class="text-gray-400 text-lg">此处为 EEG 频谱图与指标图</p>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-8 right-8 flex space-x-4">
+            <button onclick="prevScreen(1)" class="btn-secondary">返回主页</button>
+            <button onclick="downloadReport()" class="btn-primary">下载原始数据文件</button>
+        </div>
+    </div>
+
+    <!-- Custom message box for alert/confirm replacements -->
+    <div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-8 shadow-2xl text-center max-w-sm w-full">
+            <p id="message-text" class="text-xl font-semibold mb-6 text-gray-800"></p>
+            <button id="message-ok-btn" class="btn-primary w-32">确定</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    const screens = ['screen1', 'screen2', 'screen3', 'screen4'];
+    let currentScreen = 1;
+    let userInfo = {};
+    let timerInterval;
+
+    // 实验状态变量，需要重置
+    let elapsedTime = 0;
+    let currentStepIndex = 0;
+
+    const progressSteps = {
+        '睁眼静息': 30,
+        '闭眼静息': 30,
+        '听觉刺激': 60,
+        '视觉刺激': 60,
+    };
+    const stepKeys = Object.keys(progressSteps);
+    let totalTime = Object.values(progressSteps).reduce((a, b) => a + b, 0);
+
+    function showScreen(screenNumber) {
+        screens.forEach((screenId, index) => {
+            const screen = document.getElementById(screenId);
+            if (index + 1 === screenNumber) {
+                screen.classList.remove('opacity-0', 'z-0');
+                screen.classList.add('opacity-100', 'z-10');
+            } else {
+                screen.classList.remove('opacity-100', 'z-10');
+                screen.classList.add('opacity-0', 'z-0');
+            }
+        });
+        currentScreen = screenNumber;
+    }
+
+    function updateAndDisplayExperimentId() {
+        let counter = parseInt(localStorage.getItem('experimentCounter')) || 0;
+        counter++;
+        localStorage.setItem('experimentCounter', counter);
+        
+        const testDate = document.getElementById('testDate').value;
+        const paddedCounter = String(counter).padStart(3, '0');
+        document.getElementById('experimentId').value = `EEG-${testDate.replace(/-/g, '')}-${paddedCounter}`;
+    }
+
+    function resetExperimentId() {
+        localStorage.setItem('experimentCounter', 0);
+        initializeUserInfoForm();
+        showMessage("实验编号已重置为0。下一次实验编号将从001开始。");
+    }
+
+    // 重置实验状态，例如计时器和进度条
+    function resetExperimentState() {
+        elapsedTime = 0;
+        currentStepIndex = 0;
+        clearInterval(timerInterval);
+        document.getElementById('progress-fill').style.width = '0%';
+        document.getElementById('current-step-display').innerText = `睁眼静息 - 剩余 ${progressSteps[stepKeys[0]]}s`;
+        document.getElementById('task-instruction').innerText = `请保持双眼睁开，平视前方，尽量不要眨眼或移动。`;
+        document.getElementById('progress-fill').classList.remove('progress-animated');
+    }
+
+    // 清空用户信息表单
+    function clearUserInfoForm() {
+        const form = document.getElementById('userInfoForm');
+        form.reset();
+        initializeUserInfoForm();
+    }
+
+    function nextScreen(nextNumber) {
+        if (currentScreen === 1) {
+            clearUserInfoForm();
+        } else if (currentScreen === 2) {
+            if (!validateAndStoreUserInfo()) {
+                return;
+            }
+            updateAndDisplayExperimentId();
+            startExperimentLogic();
+        }
+        showScreen(nextNumber);
+    }
+
+    function prevScreen(prevNumber) {
+        if (currentScreen === 3 || currentScreen === 4) {
+            resetExperimentState(); // 在离开实验页面或报告页面时重置状态
+            clearUserInfoForm(); // 在离开报告页面时清空表单
+        }
+        showScreen(prevNumber);
+    }
+
+    function showMessage(text, callback) {
+        const msgBox = document.getElementById('message-box');
+        const msgText = document.getElementById('message-text');
+        const msgBtn = document.getElementById('message-ok-btn');
+
+        msgText.innerText = text;
+        msgBox.classList.remove('hidden');
+
+        const handleButtonClick = () => {
+            msgBox.classList.add('hidden');
+            msgBtn.removeEventListener('click', handleButtonClick);
+            if (callback) {
+                callback();
+            }
+        };
+
+        msgBtn.addEventListener('click', handleButtonClick);
+    }
+
+    function stopExperiment() {
+        showMessage("确定要中止实验吗？", () => {
+            clearInterval(timerInterval);
+            showMessage("实验已中止。", () => {
+                resetExperimentState();
+                showScreen(1);
+            });
+        });
+    }
+
+    function downloadReport() {
+        showMessage("正在生成并下载原始数据文件...");
+    }
+
+    // --- Form Logic ---
+    function initializeUserInfoForm() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const formattedDate = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('testDate').value = formattedDate;
+
+        const lastCounter = parseInt(localStorage.getItem('experimentCounter')) || 0;
+        const paddedCounter = String(lastCounter + 1).padStart(3, '0');
+        document.getElementById('experimentId').value = `EEG-${formattedDate.replace(/-/g, '')}-${paddedCounter}`;
+    }
+
+    function validateAndStoreUserInfo() {
+        const name = document.getElementById('name').value;
+        const gender = document.querySelector('input[name="gender"]:checked');
+        const dob = document.getElementById('dob').value;
+        const height = document.getElementById('height').value;
+        const weight = document.getElementById('weight').value;
+        const testLocation = document.getElementById('testLocation').value;
+        const tester = document.getElementById('tester').value;
+        const visionLeft = document.getElementById('visionLeft').value;
+        const visionRight = document.getElementById('visionRight').value;
+
+        if (!name || !gender || !dob || !height || !weight || !testLocation || !tester) {
+            showMessage("请填写所有必填信息 (姓名, 性别, 出生日期, 身高, 体重, 测试地点, 测试人员)。");
+            return false;
+        }
+
+        userInfo = {
+            name, gender: gender.value, dob, height, weight, testLocation, tester,
+            visionLeft: visionLeft || '未填写',
+            visionRight: visionRight || '未填写',
+            iq: document.getElementById('iq').value || '未填写',
+            medicalHistory: document.getElementById('medicalHistory').value || '无',
+            medication: document.getElementById('medication').value || '无',
+            testDate: document.getElementById('testDate').value,
+            experimentId: document.getElementById('experimentId').value
+        };
+
+        return true;
+    }
+
+    function showReport() {
+        const reportDiv = document.getElementById('report-user-info');
+        reportDiv.innerHTML = `
+            <p><strong>姓名:</strong> ${userInfo.name}</p>
+            <p><strong>性别:</strong> ${userInfo.gender}</p>
+            <p><strong>出生日期:</strong> ${userInfo.dob}</p>
+            <p><strong>身高:</strong> ${userInfo.height} cm</p>
+            <p><strong>体重:</strong> ${userInfo.weight} kg</p>
+            <p><strong>视力 (左/右):</strong> ${userInfo.visionLeft} / ${userInfo.visionRight}</p>
+            <p><strong>智商:</strong> ${userInfo.iq}</p>
+            <p><strong>既往病史:</strong> ${userInfo.medicalHistory}</p>
+            <p><strong>服用药:</strong> ${userInfo.medication}</p>
+            <p><strong>测试地点:</strong> ${userInfo.testLocation}</p>
+            <p><strong>测试人员:</strong> ${userInfo.tester}</p>
+            <p><strong>实验编号:</strong> ${userInfo.experimentId}</p>
+        `;
+        nextScreen(4);
+    }
+
+    // --- Experiment Logic ---
+    function startExperimentLogic() {
+        document.getElementById('progress-fill').classList.add('progress-animated');
+        let timeLeft = progressSteps[stepKeys[currentStepIndex]];
+
+        timerInterval = setInterval(() => {
+            if (timeLeft > 0) {
+                timeLeft--;
+                elapsedTime++;
+                document.getElementById('time-left').innerText = timeLeft;
+                const progressPercentage = (elapsedTime / totalTime) * 100;
+                document.getElementById('progress-fill').style.width = `${progressPercentage}%`;
+            } else {
+                currentStepIndex++;
+                if (currentStepIndex < stepKeys.length) {
+                    const nextStep = stepKeys[currentStepIndex];
+                    timeLeft = progressSteps[nextStep];
+                    document.getElementById('time-left').innerText = timeLeft;
+                    document.getElementById('current-step-display').innerText = `${nextStep} - 剩余 ${timeLeft}s`;
+                    document.getElementById('task-instruction').innerText = `请准备进行 ${nextStep} 任务。`;
+                } else {
+                    clearInterval(timerInterval);
+                    document.getElementById('progress-fill').classList.remove('progress-animated');
+                    showMessage("实验完成！", () => {
+                        showReport();
+                        resetExperimentState(); // 在实验完成后立即重置状态
+                    });
+                }
+            }
+        }, 1000);
+    }
+
+    // Handle initial UI state
+    document.addEventListener('DOMContentLoaded', () => {
+        showScreen(1);
+        initializeUserInfoForm();
+    });
+
+</script>
+</body>
+</html>
